@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vrickade Såser 😈</title>
+  <style>
+    :root {
+      --bg-light: linear-gradient(135deg, #ff69b4, #ffa500);
+      --bg-dark: #121212;
+      --card-light: #fff9ee;
+      --card-dark: #1e1e1e;
+      --text-light: #1a1a1a;
+      --text-dark: #f0f0f0;
+      --border-light: #ff4500;
+      --border-dark: #ffcc00;
+    }
+
+    body {
+      background: var(--bg-light);
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      color: var(--text-light);
+      margin: 0;
+      padding: 2rem;
+      transition: all 0.3s ease;
+    }
+
+    body.dark {
+      background: var(--bg-dark);
+      color: var(--text-dark);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 3rem;
+      color: #fff;
+      text-shadow: 2px 2px #000;
+    }
+
+    .controls {
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .controls button {
+      margin: 0.5rem;
+      padding: 0.7rem 1.2rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background-color: #ff4500;
+      color: #fff;
+      box-shadow: 2px 2px #000;
+      transition: background-color 0.2s;
+    }
+
+    .controls button:hover {
+      background-color: #e03c00;
+    }
+
+    .sauce-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    .sauce-card {
+      background: var(--card-light);
+      border: 3px dashed var(--border-light);
+      border-radius: 12px;
+      padding: 1rem;
+      width: 300px;
+      box-shadow: 4px 4px #444;
+      transition: transform 0.2s ease-in-out, background 0.3s;
+    }
+
+    body.dark .sauce-card {
+      background: var(--card-dark);
+      border-color: var(--border-dark);
+    }
+
+    .sauce-card:hover {
+      transform: scale(1.05);
+    }
+
+    .sauce-number {
+      font-weight: bold;
+      font-size: 1.2rem;
+      color: #b30000;
+    }
+
+    .sauce-name {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-top: 0.5rem;
+    }
+
+    .sauce-desc {
+      margin-top: 0.3rem;
+      font-size: 0.95rem;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 4rem;
+      color: #888;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      .sauce-card {
+        width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Vrickade Såser 😈</h1>
+  <div class="controls">
+    <button onclick="toggleDarkMode()">🔘 Växla Dark Mode</button>
+    <button onclick="scrollToRandom()">🎲 Random Sås</button>
+    <button onclick="generateNewSauce()">🎛️ Generera Ny Sås</button>
+  </div>
+
+  <div class="sauce-list" id="sauceList">
+    <!-- Såskort kommer här -->
+  </div>
+
+  <footer>
+    vd Elias © 2025
+  </footer>
+
+  <audio id="plopp-sound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3" preload="auto"></audio>
+
+  <script>
+    const sauces = [
+      ["Jordnötssmör och wasabi", "Söt, stark och total näsbränna."],
+      ["Banan-curry-majonnäs", "Mosad banan möter curry och majjo i ett tropiskt kaos."],
+      ["Vitlök-cola-glaze", "Cola reducerad med vitlök = BBQ från skuggvärlden."],
+      ["Lakrits-aioli", "Salmiak möter vitlök. Funkar... skrämmande bra."],
+      ["Blåmögelost + hallon", "Lila ostsås från framtiden."],
+      ["Chili-honung-senap med kanel", "Sött, starkt och julkryddat."],
+      ["Picklesmilk™", "Gurkspad + vaniljglass. Vad kan gå fel? Allt."],
+      ["Espresso-bacon-sirap", "Kaffe + bacon + sirap = galet gott (eller livsfarligt)."],
+      ["Tonfisk & päron", "Tonfiskröra 2.0 – nu med frukt och eld."],
+      ["Godis-pizzasås", "Geléhallon + tomatpuré. Sött, surt och skrämmande."],
+      ["Smörpopcornsås", "Smält smör + krossat popcorn = bio på tallriken."],
+      ["Blodpudding & blåbär", "Mörk, syrlig och väldigt... nordisk."],
+      ["Apelsinjuice + kaviar + senap", "Som att dricka midsommar genom näsan."],
+      ["Vitlök + choklad + feta", "Allt du inte vill ha – i samma tugga."],
+      ["Äppelmos + Tabasco + soja", "Äppel-BBQ för psykopater (vi)."],
+      ["Rostad lök + jordgubb + senap", "Kall korvfest i munnen."],
+      ["Surkål + kola + jordnötter", "Sur-sött-crunch. Tysk dessert gone rogue."],
+      ["Äggula + hallonsylt + fisksås", "Vi vet inte vad vi gjort. Men det gjordes."],
+      ["Bearnaise + chokladpudding", "Varm glass eller kall ångest?"],
+      ["Smält ost + aprikos + ketchup", "Ostfest i solnedgångens skam."],
+      ["Avokado + coleslaw + lingon", "Sverige möter Instagram. Ingen vinner."],
+      ["Banan + lök + pepparrot", "Kräks eller kärlek. Ingen vet."],
+      ["Jordnötssmör + smör + citron", "Två sorters fett och ett syrligt 'varför?'"],
+      ["Filmjölk + curry + lakrits", "Surt, starkt, sött. Och trasigt."],
+      ["Räkor + kakao + soja", "Sushi från helvetet (mole från havet)."],
+      ["Blåbärssoppa + vitlök + bearnaise", "Nagellack möter midsommar."],
+      ["Brunsås + pepparkaksdeg + rödbetsspad", "Julen dog här."],
+      ["Isvatten + senap + lakrits", "Serveras kall. För att så ska det vara."],
+      ["Oliver + honung + Oboy", "Chokladtapas med självmordstendenser."],
+      ["Rödvin + grapefruktjuice + majonnäs", "En vuxensås för vuxna misstag."],
+      ["Messmör + senap + halloumi", "Inget ont om Sverige. Men detta ÄR vårt fel."],
+      ["Ananas + blåmögelost + ketchup", "Flytande pizza från framtiden."],
+      ["Vitkål + chokladglass + tabasco", "Coleslaw i terapi."],
+      ["Saltgurka + nougat + remouladsås", "En dansk mardröm."],
+      ["Gravlaxsås + blåbär + kaffe", "Fika + fisk + ångest."],
+      ["Äggvita + nutella + fisksås", "Crème du Kaos™"]
+    ];
+
+    const ingredients = [
+      "Lakrits", "Tonfisk", "Ägg", "Sirap", "Senap", "Majonnäs", "Filmjölk", "Banan", "Choklad", "Kaviar",
+      "Smält ost", "Kaffe", "Lingon", "Vitlök", "Ketchup", "Jordnötssmör", "Blodpudding", "Fetaost",
+      "Skumtomtar", "Cola", "Surkål", "Rostad lök", "Apelsinjuice", "Gravlaxsås", "Pepparkaksdeg",
+      "Päron", "Jordgubbssylt", "Oboy", "Blåmögelost", "Äppelmos", "Chili", "Smör", "Pickles", "Nougat", "Tabasco", "Soja"
+    ];
+
+    const endings = [
+      "du inte kommer undan", "som ingen bett om", "som barn gråter av", "för desperata kvällar",
+      "att bjuda svärmor på", "du inte kan tvätta bort", "som luktar beslut", "med eftersmak av ångest",
+      "för dom som sett för mycket", "att ångra i efterhand"
+    ];
+
+    const sauceList = document.getElementById("sauceList");
+    const sound = document.getElementById("plopp-sound");
+
+    sauces.forEach((sauce, index) => {
+      const card = document.createElement("div");
+      card.className = "sauce-card";
+      card.innerHTML = `
+        <div class="sauce-number">${index + 1}.</div>
+        <div class="sauce-name">${sauce[0]}</div>
+        <div class="sauce-desc">${sauce[1]}</div>
+      `;
+      card.onclick = () => sound.play();
+      sauceList.appendChild(card);
+    });
+
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark");
+    }
+
+    function scrollToRandom() {
+      const cards = document.querySelectorAll(".sauce-card");
+      const randomCard = cards[Math.floor(Math.random() * cards.length)];
+      randomCard.scrollIntoView({ behavior: "smooth", block: "center" });
+      randomCard.style.outline = "4px solid red";
+      sound.play();
+      setTimeout(() => randomCard.style.outline = "none", 1000);
+    }
+
+    function generateNewSauce() {
+      const shuffled = [...ingredients].sort(() => 0.5 - Math.random());
+      const selected = shuffled.slice(0, 3);
+      const name = selected.join(" + ");
+      const desc = `${name} – en sås ${endings[Math.floor(Math.random() * endings.length)]}.`;
+
+      const newCard = document.createElement("div");
+      newCard.className = "sauce-card";
+      newCard.innerHTML = `
+        <div class="sauce-number">🆕</div>
+        <div class="sauce-name">${name}</div>
+        <div class="sauce-desc">${desc}</div>
+      `;
+      newCard.onclick = () => sound.play();
+      sauceList.prepend(newCard);
+      sound.play();
+    }
+  </script>
+</body>
+</html>
